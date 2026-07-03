@@ -150,12 +150,11 @@ export function createSaveTourTool(state: DocentState) {
 	});
 }
 
-export function generationPrompt(topic: string, slug: string, focus?: string): string {
-	const focusLine = focus ? `\nPay special attention to: ${focus}\n` : "";
+export function generationPrompt(topic: string, slug: string): string {
 	return `Create a guided code tour to onboard a developer who is completely new to this repository.
 
 Topic: ${topic}
-${focusLine}
+
 Work in two phases.
 
 PHASE 1 — EXPLORE (do this first):

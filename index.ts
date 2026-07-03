@@ -4,7 +4,6 @@
  * /tour                lists saved tours and plays the one you pick
  * /tour <topic>        plays the saved tour, or asks the agent to build one
  * /tour <topic> --refresh   regenerates
- * /tour <topic> <focus...>  extra guidance for generation
  *
  * Generation is a one-time agent run that must cite real file/line ranges
  * (validated on save). Playback reads files live from disk and costs zero
@@ -46,7 +45,7 @@ export default function (pi: ExtensionAPI) {
 
 	pi.registerCommand("tour", {
 		description:
-			"Take or create a guided code tour (usage: /tour [topic] [--refresh] [focus...])",
+			"Take or create a guided code tour (usage: /tour [topic...] [--refresh])",
 		getArgumentCompletions: (prefix: string): AutocompleteItem[] | null => {
 			if (!state.cwd) return null;
 			const items = listTours(state.cwd)
@@ -57,9 +56,8 @@ export default function (pi: ExtensionAPI) {
 		handler: async (args, ctx) => {
 			const parts = args.trim().split(/\s+/).filter(Boolean);
 			const refresh = parts.includes("--refresh");
-			const words = parts.filter((p) => p !== "--refresh");
-			const topic = words[0];
-			const focus = words.slice(1).join(" ") || undefined;
+			// The whole phrase is the topic: "/tour how billing webhooks retry" is one tour.
+			const topic = parts.filter((p) => p !== "--refresh").join(" ") || undefined;
 
 			// No topic: pick from saved tours.
 			if (!topic) {
@@ -113,7 +111,7 @@ export default function (pi: ExtensionAPI) {
 				);
 				if (!ok) return;
 			}
-			pi.sendUserMessage(generationPrompt(topic, slug, focus));
+			pi.sendUserMessage(generationPrompt(topic, slug));
 		},
 	});
 

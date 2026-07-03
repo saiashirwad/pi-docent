@@ -20,7 +20,7 @@ play back interactively with the live code on screen.
 | `/tour` | Pick from saved tours and play it |
 | `/tour auth` | Play the saved "auth" tour, or ask the agent to build it |
 | `/tour auth --refresh` | Regenerate from current code |
-| `/tour auth how sessions persist` | Extra focus hint for generation |
+| `/tour how billing webhooks retry` | Multi-word topics are fine — the whole phrase is the tour |
 
 You can also just ask in plain words — "build me a tour of the billing webhooks"
 — the agent knows about `save_tour`.
