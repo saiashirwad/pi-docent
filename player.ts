@@ -7,6 +7,42 @@ import type { Tour } from "./types.js";
 export type PlayerResult = { action: "quit" } | { action: "ask"; stepIndex: number };
 
 const MAX_CODE_LINES = 24;
+/** Prose wraps at this measure even in wide terminals — long lines are hard to read. */
+const PROSE_MEASURE = 78;
+/** Explanations render as short paragraphs of at most this many characters. */
+const PARA_TARGET = 170;
+
+/**
+ * Break prose into small paragraphs. Authored blank lines win; a single long
+ * paragraph is split at sentence boundaries into ~1-2 sentence chunks so it
+ * reads as bites, not a wall.
+ */
+export function toParagraphs(text: string): string[] {
+	const authored = text
+		.split(/\n{2,}/)
+		.map((p) => p.replace(/\s+/g, " ").trim())
+		.filter(Boolean);
+
+	const out: string[] = [];
+	for (const para of authored) {
+		if (para.length <= PARA_TARGET) {
+			out.push(para);
+			continue;
+		}
+		const sentences = para.split(/(?<=[.!?])\s+(?=[A-Z`'"(])/);
+		let chunk = "";
+		for (const sentence of sentences) {
+			if (chunk && chunk.length + sentence.length + 1 > PARA_TARGET) {
+				out.push(chunk);
+				chunk = sentence;
+			} else {
+				chunk = chunk ? `${chunk} ${sentence}` : sentence;
+			}
+		}
+		if (chunk) out.push(chunk);
+	}
+	return out;
+}
 
 /**
  * Interactive tour player. Page 0 is the itinerary; pages 1..N are the steps.
@@ -79,8 +115,11 @@ export class TourPlayer {
 		const out: string[] = [];
 		out.push(this.headerLine(width, "itinerary"));
 		out.push("");
-		for (const line of wrapTextWithAnsi(this.tour.overview, width)) out.push(line);
-		out.push("");
+		const measure = Math.min(width, PROSE_MEASURE);
+		for (const para of toParagraphs(this.tour.overview)) {
+			for (const line of wrapTextWithAnsi(para, measure)) out.push(line);
+			out.push("");
+		}
 		this.tour.steps.forEach((step, i) => {
 			out.push(
 				truncateToWidth(
@@ -149,8 +188,11 @@ export class TourPlayer {
 			out.push("");
 		}
 
-		for (const line of wrapTextWithAnsi(step.explanation, width)) out.push(line);
-		out.push("");
+		const measure = Math.min(width, PROSE_MEASURE);
+		for (const para of toParagraphs(step.explanation)) {
+			for (const line of wrapTextWithAnsi(para, measure)) out.push(line);
+			out.push("");
+		}
 		out.push(this.footerLine(width, true));
 		return out;
 	}

@@ -175,6 +175,7 @@ Call the save_tour tool exactly once with topic "${slug}" and 5-10 steps. Requir
 - Order the steps as a story a newcomer can follow: entry point first, then the core flow, then supporting pieces.
 - Write each explanation for a smart developer who has never seen this repo: plain language first, then the repo-specific names they will need to grep. Explain WHY the code is shaped the way it is whenever you can tell, not just what it does.
 - Make each explanation connect to the previous step so the tour reads as one continuous walkthrough.
+- Format explanations for fast scanning: 2-4 short paragraphs separated by blank lines, one idea per paragraph, no sentence over ~25 words. Never write one big paragraph.
 
 Rules:
 - This is a read-only task. Do not create, modify, or delete any files.
