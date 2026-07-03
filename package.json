@@ -1,0 +1,40 @@
+{
+	"name": "pi-docent",
+	"version": "0.1.0",
+	"description": "Guided code tours for Pi: the agent explores a feature once and saves a validated tour; replay it interactively for zero tokens.",
+	"type": "module",
+	"license": "MIT",
+	"author": "Sai Ashirwad <saiashirwadr@gmail.com>",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/saiashirwad/pi-docent.git"
+	},
+	"keywords": [
+		"pi-package",
+		"pi-extension",
+		"pi-coding-agent",
+		"code-tour",
+		"onboarding",
+		"developer-tools"
+	],
+	"files": [
+		"index.ts",
+		"generate.ts",
+		"player.ts",
+		"storage.ts",
+		"types.ts",
+		"README.md",
+		"LICENSE"
+	],
+	"pi": {
+		"extensions": ["./index.ts"]
+	},
+	"peerDependencies": {
+		"@earendil-works/pi-coding-agent": "*",
+		"@earendil-works/pi-tui": "*",
+		"typebox": "*"
+	},
+	"engines": {
+		"node": ">=18"
+	}
+}
