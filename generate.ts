@@ -136,8 +136,15 @@ export function createSaveTourTool(state: DocentState) {
 		},
 
 		renderResult(result, _options, theme) {
-			const details = result.details as SaveTourDetails | undefined;
-			if (!details) {
+			// Validation failures also land here (with the error text as content and
+			// no usable details) — show the real message, never a success card.
+			const details = result.details as Partial<SaveTourDetails> | undefined;
+			if (
+				!details ||
+				typeof details.slug !== "string" ||
+				typeof details.title !== "string" ||
+				typeof details.stepCount !== "number"
+			) {
 				const first = result.content[0];
 				return new Text(first?.type === "text" ? first.text : "", 0, 0);
 			}
